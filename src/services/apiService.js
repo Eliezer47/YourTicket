@@ -19,17 +19,22 @@ export const setApiKey = (apiKey) => {
 };
 
 // Function to login
-export const login = async (username, password) => {
+export const login = async (userName, userPassword) => {
   try {
     const response = await apiService.post("/usersession/login", {
-      username,
-      password,
+      userName,
+      userPassword,
     });
     return response.data;
   } catch (error) {
     console.error("Error during login:", error.response || error.message);
     throw error;
   }
+};
+
+// Function to logout
+export const logout = () => {
+  setApiKey(null);
 };
 
 export default apiService;

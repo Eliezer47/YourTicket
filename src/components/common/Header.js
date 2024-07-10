@@ -6,7 +6,7 @@ const Header = ({ isLoggedIn, onLogout }) => {
 
   const handleLogout = () => {
     onLogout();
-    navigate("/");
+    navigate("/login");
   };
 
   return (

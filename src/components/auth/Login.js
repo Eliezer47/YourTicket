@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { login } from "../../services/apiService";
 
 const Login = ({ onLoginSuccess }) => {
   const [username, setUsername] = useState("");
@@ -8,6 +9,7 @@ const Login = ({ onLoginSuccess }) => {
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  // const [validationMessage, setValidationMessage] = useState("");
 
   const navigate = useNavigate();
 
@@ -17,9 +19,7 @@ const Login = ({ onLoginSuccess }) => {
     // Validaciones adicionales
     let valid = true;
     if (username.length < 4) {
-      setUsernameError(
-        "El nombre de usuario debe tener al menos 4 caracteres."
-      );
+      setUsernameError("El nombre de usuario debe tener al menos 4 caracteres.");
       valid = false;
     } else {
       setUsernameError("");
@@ -36,12 +36,23 @@ const Login = ({ onLoginSuccess }) => {
       return;
     }
 
-    // Validación temporal
-    if (username === "usuario" && password === "contrasena") {
-      onLoginSuccess({ username });
-      navigate("/ordenes");
-    } else {
+    try {
+      const loginData = await login(username, password);
+      //console.log("Login response data:", loginData);
+
+      // Simular la validación del token
+      if (loginData.token) {
+        // setValidationMessage("Token de acceso válido.");
+        onLoginSuccess(loginData);
+        navigate("/ordenes");
+      } else {
+        // setValidationMessage("Token de acceso inválido.");
+        setError("Nombre de usuario o contraseña incorrectos.");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
       setError("Nombre de usuario o contraseña incorrectos.");
+      // setValidationMessage("Token de acceso inválido.");
     }
   };
 
@@ -62,6 +73,11 @@ const Login = ({ onLoginSuccess }) => {
           Iniciar Sesión
         </h2>
         {error && <div className="alert alert-danger">{error}</div>}
+        {/* {validationMessage && (
+          <div className={`alert ${validationMessage.includes("válido") ? "alert-success" : "alert-danger"}`}>
+            {validationMessage}
+          </div>
+        )} */}
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="username" className="form-label text-secondary">

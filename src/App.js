@@ -22,19 +22,18 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    // Restaurar el estado de sesión desde localStorage
     const loggedIn = localStorage.getItem("isLoggedIn") === "true";
     setIsLoggedIn(loggedIn);
   }, []);
 
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
-    localStorage.setItem("isLoggedIn", "true"); // Guardar el estado de sesión en localStorage
+    localStorage.setItem("isLoggedIn", "true");
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    localStorage.removeItem("isLoggedIn"); // Eliminar el estado de sesión de localStorage
+    localStorage.removeItem("isLoggedIn");
   };
 
   return (
@@ -44,7 +43,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route
           path="/login"
-          element={<Login onLoginSuccess={handleLoginSuccess} />}
+          element={isLoggedIn ? <Navigate to="/" /> : <Login onLoginSuccess={handleLoginSuccess} />}
         />
         <Route
           path="/ordenes"
